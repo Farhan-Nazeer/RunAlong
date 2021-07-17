@@ -1,62 +1,71 @@
 //import * as React from "react";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import * as Location from "expo-location";
 
-export default function MapOnScreen(props) {
-  const mapRef = React.createRef();
-  //TODO: look into animateCamera
-  onNewPosition = () => {
-    console.log("called");
-    //TODO: Replace hard coded values with actual variable
+function changePosition(lat, long, mapRef) {
+  if (mapRef.current) {
     mapRef.current.animateToRegion(
       {
-        latitude: 37.4219983,
-        longitude: -122.084,
+        latitude: lat,
+        longitude: long,
         latitudeDelta: 0.04,
         longitudeDelta: 0.04,
       },
       1000
     );
+  }
+}
+
+export default function MapOnScreen({ lat, long, setLat, setLong }) {
+  const mapRef = React.createRef();
+  const [positionChanged, setPositionChanged] = useState(null);
+  onNewPosition = (location) => {
+    setLat(location.coords.latitude);
+    setLong(location.coords.longitude);
+    setPositionChanged(true);
   };
 
   useEffect(() => {
     (async () => {
-      console.log("here");
       const options = {
         enableHighAccuracy: true,
         timeInterval: 1000,
         distanceInterval: 1,
       };
-      watcher = await Location.watchPositionAsync(
-        options,
-        onNewPosition,
-        mapRef
-      );
+      watcher = await Location.watchPositionAsync(options, onNewPosition);
+      if (positionChanged) {
+        changePosition(lat, long, mapRef);
+        setPositionChanged(false);
+      }
+
+      console.log(lat, long);
     })();
-  }, []);
+  }, [positionChanged]);
 
   function componentWillUnmount() {
     watcher.remove();
   }
-  console.log(props.lat, props.long);
+  // console.log("outside", lat, long);
 
   return (
     <View style={styles.container}>
       <MapView
         ref={mapRef}
         style={styles.map}
+        // showsUserLocation={true}
         initialRegion={{
-          latitude: props.lat,
-          longitude: props.long,
+          latitude: lat,
+          longitude: long,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        // provider={PROVIDER_GOOGLE}
         provider="google"
       >
         <Marker
-          coordinate={{ latitude: props.lat, longitude: props.long }}
+          coordinate={{ latitude: lat, longitude: long }}
           pinColor={"red"}
           title={"title"}
           description={"description"}

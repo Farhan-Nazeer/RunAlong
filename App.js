@@ -22,8 +22,8 @@ export default function App() {
         accuracy: Location.Accuracy.High,
       });
       setLocation(location);
-      setLatitudeValue(location.coords.latitude)
-      setLongitudeValue(location.coords.longitude)
+      setLatitudeValue(location.coords.latitude);
+      setLongitudeValue(location.coords.longitude);
     })();
   }, []);
 
@@ -36,8 +36,13 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <MapOnScreen lat={latitudeValue} long={longitudeValue}/>
-      <Text>{text}</Text> 
+      <MapOnScreen
+        lat={latitudeValue}
+        long={longitudeValue}
+        setLat={setLatitudeValue}
+        setLong={setLongitudeValue}
+      />
+      <Text>{text}</Text>
       <StatusBar style="auto" />
     </View>
   );
