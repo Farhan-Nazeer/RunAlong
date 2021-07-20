@@ -1,8 +1,10 @@
 //import * as React from "react";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, Polyline } from "react-native-maps";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import * as Location from "expo-location";
+
+const DEGREES_TO_METERS = 111139
 
 function changePosition(lat, long, mapRef) {
   if (mapRef.current) {
@@ -18,14 +20,39 @@ function changePosition(lat, long, mapRef) {
   }
 }
 
-export default function MapOnScreen({ lat, long, setLat, setLong }) {
+// function calcDistanceTravelled(coordinates, ){
+//   let distance = 0
+//   for (let i = 0; i < coordinates.length - 1; i++) {
+//     xDistance = coordinates[i].latitude - coordinates[i+1].latitude
+//     yDistance = coordinates[i].longitude - coordinates[i+1].longitude
+//     distance += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
+//   }
+//   return distance
+// }
+
+function calcDistanceTravelled(coordinates){
+  let distanceChange = 0
+  xDistance = coordinates[0].latitude - coordinates[1].latitude
+  yDistance = coordinates[0].longitude - coordinates[1].longitude
+  distanceChange += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
+  return distanceChange * DEGREES_TO_METERS
+}
+
+export default function MapOnScreen({ lat, long, setLat, setLong, cordsArr, setCordsArr, totalDistance, setTotalDistance }) {
   const mapRef = React.createRef();
   const [positionChanged, setPositionChanged] = useState(null);
+  const [coordinatesUpdated, setCoordinatesUpdated] = useState(null);
+
   onNewPosition = (location) => {
     setLat(location.coords.latitude);
     setLong(location.coords.longitude);
     setPositionChanged(true);
   };
+
+  updateCordinates = () => {
+    setCordsArr(cordsArr => [...cordsArr, {latitude: lat, longitude: long}])
+    setCoordinatesUpdated(true)
+  }
 
   useEffect(() => {
     (async () => {
@@ -35,18 +62,25 @@ export default function MapOnScreen({ lat, long, setLat, setLong }) {
         distanceInterval: 1,
       };
       watcher = await Location.watchPositionAsync(options, onNewPosition);
+      // Try to reverse order of distance and position changed if cant calc distance properly
+      if (coordinatesUpdated){
+        newDistance = totalDistance + calcDistanceTravelled(cordsArr.slice(-2))
+        setTotalDistance(newDistance) //Maybe make this own function to match other "set" calls
+        setCoordinatesUpdated(false) 
+      }
       if (positionChanged) {
         changePosition(lat, long, mapRef);
+        updateCordinates();
         setPositionChanged(false);
       }
 
-      console.log(lat, long);
+      console.log(lat, long, totalDistance);
     })();
-  }, [positionChanged]);
+  }, [positionChanged, coordinatesUpdated]);
 
-  function componentWillUnmount() {
-    watcher.remove();
-  }
+  // function componentWillUnmount() {
+  //   watcher.remove();
+  // }
   // console.log("outside", lat, long);
 
   return (
@@ -54,14 +88,12 @@ export default function MapOnScreen({ lat, long, setLat, setLong }) {
       <MapView
         ref={mapRef}
         style={styles.map}
-        // showsUserLocation={true}
         initialRegion={{
           latitude: lat,
           longitude: long,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        // provider={PROVIDER_GOOGLE}
         provider="google"
       >
         <Marker
@@ -69,6 +101,13 @@ export default function MapOnScreen({ lat, long, setLat, setLong }) {
           pinColor={"red"}
           title={"title"}
           description={"description"}
+        />
+        <Polyline
+          coordinates={cordsArr}
+          lineDashPattern={[1]}
+          lineCap="butt"
+          strokeColor="purple"
+          strokeWidth={6}
         />
       </MapView>
     </View>

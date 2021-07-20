@@ -11,6 +11,10 @@ export default function App() {
   const [latitudeValue, setLatitudeValue] = useState(4);
   const [longitudeValue, setLongitudeValue] = useState(4);
 
+  const [cordinatesArray, setCordinatesArray] = useState([{latitude: 4, longitude: 4}]);
+
+  const [distanceTravelled, setDistanceTravelled] = useState(0);
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -41,6 +45,10 @@ export default function App() {
         long={longitudeValue}
         setLat={setLatitudeValue}
         setLong={setLongitudeValue}
+        cordsArr={cordinatesArray}
+        setCordsArr={setCordinatesArray}
+        totalDistance={distanceTravelled}
+        setTotalDistance={setDistanceTravelled}
       />
       <Text>{text}</Text>
       <StatusBar style="auto" />
