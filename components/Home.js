@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
-export default function Home({ setStarted }) {
+export default function Home({ setRunStatus }) {
   return (
     <View style={styles.container}>
       <Button
         title="Start"
         onPress={() => {
-          setStarted(true);
+          setRunStatus("Started");
         }}
       />
     </View>

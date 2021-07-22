@@ -5,21 +5,24 @@ import * as Location from "expo-location";
 
 import MapOnScreen from "./components/Run";
 import Home from "./components/Home";
+import End from "./components/End";
+
+const DEFAULT_POSITION = 4;
 
 export default function App() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   //TODO: figure out actual intial states for lat long
-  const [latitudeValue, setLatitudeValue] = useState(4);
-  const [longitudeValue, setLongitudeValue] = useState(4);
+  const [latitudeValue, setLatitudeValue] = useState(DEFAULT_POSITION);
+  const [longitudeValue, setLongitudeValue] = useState(DEFAULT_POSITION);
 
   const [cordinatesArray, setCordinatesArray] = useState([
-    { latitude: 4, longitude: 4 },
+    { latitude: DEFAULT_POSITION, longitude: DEFAULT_POSITION },
   ]);
 
   const [distanceTravelled, setDistanceTravelled] = useState(0);
 
-  const [runStarted, setRunStarted] = useState(null);
+  const [status, setStatus] = useState("Not Started");
   const [runDuration, setRunDuration] = useState(0);
 
   useEffect(() => {
@@ -47,8 +50,8 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!runStarted && <Home setStarted={setRunStarted} />}
-      {runStarted && (
+      {status == "Not Started" && <Home setRunStatus={setStatus} />}
+      {status == "Started" && (
         <MapOnScreen
           lat={latitudeValue}
           long={longitudeValue}
@@ -60,9 +63,22 @@ export default function App() {
           setTotalDistance={setDistanceTravelled}
           runTime={runDuration}
           setRunTime={setRunDuration}
+          setRunStatus={setStatus}
         />
       )}
       {/* <Text>{text}</Text> */}
+      {status == "Ended" && (
+        <End
+          setRunStatus={setStatus}
+          runTime={runDuration}
+          setRunTime={setRunDuration}
+          totalDistance={distanceTravelled}
+          setTotalDistance={setDistanceTravelled}
+          setCordsArr={setCordinatesArray}
+          setLat={setLatitudeValue}
+          setLong={setLongitudeValue}
+        />
+      )}
       <StatusBar style="auto" />
     </SafeAreaView>
   );

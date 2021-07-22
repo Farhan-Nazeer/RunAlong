@@ -1,7 +1,13 @@
 //import * as React from "react";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, SafeAreaView, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  Dimensions,
+  Button,
+} from "react-native";
 import * as Location from "expo-location";
 
 const DEGREES_TO_METERS = 111139;
@@ -19,16 +25,6 @@ function changePosition(lat, long, mapRef) {
     );
   }
 }
-
-// function calcDistanceTravelled(coordinates, ){
-//   let distance = 0
-//   for (let i = 0; i < coordinates.length - 1; i++) {
-//     xDistance = coordinates[i].latitude - coordinates[i+1].latitude
-//     yDistance = coordinates[i].longitude - coordinates[i+1].longitude
-//     distance += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
-//   }
-//   return distance
-// }
 
 function calcDistanceTravelled(coordinates) {
   let distanceChange = 0;
@@ -49,6 +45,7 @@ export default function MapOnScreen({
   setTotalDistance,
   runTime,
   setRunTime,
+  setRunStatus,
 }) {
   const mapRef = React.createRef();
   const [positionChanged, setPositionChanged] = useState(null);
@@ -96,6 +93,9 @@ export default function MapOnScreen({
     })();
     return () => {
       clearInterval(intervalID);
+      // async () => {
+      //   await watcher.remove();
+      // };
     };
   }, [positionChanged, coordinatesUpdated]);
 
@@ -132,6 +132,13 @@ export default function MapOnScreen({
         />
       </MapView>
       <Text>{new Date(runTime * 1000).toISOString().substr(11, 8)}</Text>
+      <Button
+        style={styles.endButton}
+        title="End"
+        onPress={() => {
+          setRunStatus("Ended");
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -146,5 +153,8 @@ const styles = StyleSheet.create({
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+  },
+  endButton: {
+    zIndex: 1,
   },
 });
