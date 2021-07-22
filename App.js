@@ -1,9 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { Platform, Text, View, StyleSheet } from "react-native";
+import { Platform, Text, SafeAreaView, StyleSheet } from "react-native";
 import * as Location from "expo-location";
 
 import MapOnScreen from "./components/Run";
+import Home from "./components/Home";
+
 export default function App() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -11,9 +13,14 @@ export default function App() {
   const [latitudeValue, setLatitudeValue] = useState(4);
   const [longitudeValue, setLongitudeValue] = useState(4);
 
-  const [cordinatesArray, setCordinatesArray] = useState([{latitude: 4, longitude: 4}]);
+  const [cordinatesArray, setCordinatesArray] = useState([
+    { latitude: 4, longitude: 4 },
+  ]);
 
   const [distanceTravelled, setDistanceTravelled] = useState(0);
+
+  const [runStarted, setRunStarted] = useState(null);
+  const [runDuration, setRunDuration] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -39,20 +46,25 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <MapOnScreen
-        lat={latitudeValue}
-        long={longitudeValue}
-        setLat={setLatitudeValue}
-        setLong={setLongitudeValue}
-        cordsArr={cordinatesArray}
-        setCordsArr={setCordinatesArray}
-        totalDistance={distanceTravelled}
-        setTotalDistance={setDistanceTravelled}
-      />
-      <Text>{text}</Text>
+    <SafeAreaView style={styles.container}>
+      {!runStarted && <Home setStarted={setRunStarted} />}
+      {runStarted && (
+        <MapOnScreen
+          lat={latitudeValue}
+          long={longitudeValue}
+          setLat={setLatitudeValue}
+          setLong={setLongitudeValue}
+          cordsArr={cordinatesArray}
+          setCordsArr={setCordinatesArray}
+          totalDistance={distanceTravelled}
+          setTotalDistance={setDistanceTravelled}
+          runTime={runDuration}
+          setRunTime={setRunDuration}
+        />
+      )}
+      {/* <Text>{text}</Text> */}
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 

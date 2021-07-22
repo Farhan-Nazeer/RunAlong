@@ -1,10 +1,10 @@
 //import * as React from "react";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, SafeAreaView, Dimensions } from "react-native";
 import * as Location from "expo-location";
 
-const DEGREES_TO_METERS = 111139
+const DEGREES_TO_METERS = 111139;
 
 function changePosition(lat, long, mapRef) {
   if (mapRef.current) {
@@ -30,15 +30,26 @@ function changePosition(lat, long, mapRef) {
 //   return distance
 // }
 
-function calcDistanceTravelled(coordinates){
-  let distanceChange = 0
-  xDistance = coordinates[0].latitude - coordinates[1].latitude
-  yDistance = coordinates[0].longitude - coordinates[1].longitude
-  distanceChange += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
-  return distanceChange * DEGREES_TO_METERS
+function calcDistanceTravelled(coordinates) {
+  let distanceChange = 0;
+  xDistance = coordinates[0].latitude - coordinates[1].latitude;
+  yDistance = coordinates[0].longitude - coordinates[1].longitude;
+  distanceChange += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+  return distanceChange * DEGREES_TO_METERS;
 }
 
-export default function MapOnScreen({ lat, long, setLat, setLong, cordsArr, setCordsArr, totalDistance, setTotalDistance }) {
+export default function MapOnScreen({
+  lat,
+  long,
+  setLat,
+  setLong,
+  cordsArr,
+  setCordsArr,
+  totalDistance,
+  setTotalDistance,
+  runTime,
+  setRunTime,
+}) {
   const mapRef = React.createRef();
   const [positionChanged, setPositionChanged] = useState(null);
   const [coordinatesUpdated, setCoordinatesUpdated] = useState(null);
@@ -50,11 +61,18 @@ export default function MapOnScreen({ lat, long, setLat, setLong, cordsArr, setC
   };
 
   updateCordinates = () => {
-    setCordsArr(cordsArr => [...cordsArr, {latitude: lat, longitude: long}])
-    setCoordinatesUpdated(true)
-  }
+    setCordsArr((cordsArr) => [
+      ...cordsArr,
+      { latitude: lat, longitude: long },
+    ]);
+    setCoordinatesUpdated(true);
+  };
 
   useEffect(() => {
+    const intervalID = setInterval(() => {
+      setRunTime((runTime) => runTime + 1);
+    }, 1000);
+
     (async () => {
       const options = {
         enableHighAccuracy: true,
@@ -63,10 +81,10 @@ export default function MapOnScreen({ lat, long, setLat, setLong, cordsArr, setC
       };
       watcher = await Location.watchPositionAsync(options, onNewPosition);
       // Try to reverse order of distance and position changed if cant calc distance properly
-      if (coordinatesUpdated){
-        newDistance = totalDistance + calcDistanceTravelled(cordsArr.slice(-2))
-        setTotalDistance(newDistance) //Maybe make this own function to match other "set" calls
-        setCoordinatesUpdated(false) 
+      if (coordinatesUpdated) {
+        newDistance = totalDistance + calcDistanceTravelled(cordsArr.slice(-2));
+        setTotalDistance(newDistance); //Maybe make this own function to match other "set" calls
+        setCoordinatesUpdated(false);
       }
       if (positionChanged) {
         changePosition(lat, long, mapRef);
@@ -76,6 +94,9 @@ export default function MapOnScreen({ lat, long, setLat, setLong, cordsArr, setC
 
       console.log(lat, long, totalDistance);
     })();
+    return () => {
+      clearInterval(intervalID);
+    };
   }, [positionChanged, coordinatesUpdated]);
 
   // function componentWillUnmount() {
@@ -84,7 +105,7 @@ export default function MapOnScreen({ lat, long, setLat, setLong, cordsArr, setC
   // console.log("outside", lat, long);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <MapView
         ref={mapRef}
         style={styles.map}
@@ -110,7 +131,8 @@ export default function MapOnScreen({ lat, long, setLat, setLong, cordsArr, setC
           strokeWidth={6}
         />
       </MapView>
-    </View>
+      <Text>{new Date(runTime * 1000).toISOString().substr(11, 8)}</Text>
+    </SafeAreaView>
   );
 }
 
