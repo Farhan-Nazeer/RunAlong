@@ -9,7 +9,11 @@ import {
   Button,
 } from "react-native";
 import * as Location from "expo-location";
-
+/*TODO:
+  - Figure out why marker updates but polyline and animate to region dont work on second run of app on Farhan's phone
+  - Polyline and animate to region both end up updating, but a lot after the marker and they update together. Figure out
+  how to make this update faster
+*/
 const DEGREES_TO_METERS = 111139;
 
 function changePosition(lat, long, mapRef) {
@@ -47,11 +51,12 @@ export default function MapOnScreen({
   setRunTime,
   setRunStatus,
 }) {
-  const mapRef = React.createRef();
+  const mapRef = React.useRef(null)
   const [positionChanged, setPositionChanged] = useState(null);
   const [coordinatesUpdated, setCoordinatesUpdated] = useState(null);
 
   onNewPosition = (location) => {
+    console.log("position changed")
     setLat(location.coords.latitude);
     setLong(location.coords.longitude);
     setPositionChanged(true);
@@ -73,8 +78,8 @@ export default function MapOnScreen({
     (async () => {
       const options = {
         enableHighAccuracy: true,
-        timeInterval: 1000,
-        distanceInterval: 1,
+        timeInterval: 10,
+        distanceInterval: 0, //this can also be 1
       };
       watcher = await Location.watchPositionAsync(options, onNewPosition);
       // Try to reverse order of distance and position changed if cant calc distance properly
@@ -93,16 +98,11 @@ export default function MapOnScreen({
     })();
     return () => {
       clearInterval(intervalID);
-      // async () => {
-      //   await watcher.remove();
-      // };
+      async () => {
+        await watcher.remove();
+      };
     };
   }, [positionChanged, coordinatesUpdated]);
-
-  // function componentWillUnmount() {
-  //   watcher.remove();
-  // }
-  // console.log("outside", lat, long);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -131,7 +131,9 @@ export default function MapOnScreen({
           strokeWidth={6}
         />
       </MapView>
-      <Text>{new Date(runTime * 1000).toISOString().substr(11, 8)}</Text>
+      <Text>
+        {new Date(runTime * 1000).toISOString().substr(11, 8)}{" "}
+      </Text>
       <Button
         style={styles.endButton}
         title="End"
