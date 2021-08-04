@@ -10,8 +10,6 @@ import End from "./components/End";
 const DEFAULT_POSITION = 4;
 
 export default function App() {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
   //TODO: figure out actual intial states for lat long
   const [latitudeValue, setLatitudeValue] = useState(DEFAULT_POSITION);
   const [longitudeValue, setLongitudeValue] = useState(DEFAULT_POSITION);
@@ -35,18 +33,10 @@ export default function App() {
       let location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
-      setLocation(location);
       setLatitudeValue(location.coords.latitude);
       setLongitudeValue(location.coords.longitude);
     })();
   }, []);
-
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
 
   return (
     <SafeAreaView style={styles.container}>

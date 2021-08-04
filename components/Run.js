@@ -16,20 +16,6 @@ import * as Location from "expo-location";
 */
 const DEGREES_TO_METERS = 111139;
 
-function changePosition(lat, long, mapRef) {
-  if (mapRef.current) {
-    mapRef.current.animateToRegion(
-      {
-        latitude: lat,
-        longitude: long,
-        latitudeDelta: 0.04,
-        longitudeDelta: 0.04,
-      },
-      1000
-    );
-  }
-}
-
 function calcDistanceTravelled(coordinates) {
   let distanceChange = 0;
   xDistance = coordinates[0].latitude - coordinates[1].latitude;
@@ -51,12 +37,26 @@ export default function MapOnScreen({
   setRunTime,
   setRunStatus,
 }) {
-  const mapRef = React.useRef(null)
-  const [positionChanged, setPositionChanged] = useState(null);
-  const [coordinatesUpdated, setCoordinatesUpdated] = useState(null);
+  const mapRef = React.useRef(null);
+  const [positionChanged, setPositionChanged] = useState(false);
+  const [coordinatesUpdated, setCoordinatesUpdated] = useState(false);
+
+  changePosition = () => {
+    if (mapRef.current) {
+      mapRef.current.animateToRegion(
+        {
+          latitude: lat,
+          longitude: long,
+          latitudeDelta: 0.04,
+          longitudeDelta: 0.04,
+        },
+        1000
+      );
+    }
+  };
 
   onNewPosition = (location) => {
-    console.log("position changed")
+    console.log("position changed");
     setLat(location.coords.latitude);
     setLong(location.coords.longitude);
     setPositionChanged(true);
@@ -78,8 +78,9 @@ export default function MapOnScreen({
     (async () => {
       const options = {
         enableHighAccuracy: true,
+        //accuracy: Location.Accuracy.Low,
         timeInterval: 10,
-        distanceInterval: 0, //this can also be 1
+        distanceInterval: 1, //can be 1 or 0
       };
       watcher = await Location.watchPositionAsync(options, onNewPosition);
       // Try to reverse order of distance and position changed if cant calc distance properly
@@ -89,7 +90,7 @@ export default function MapOnScreen({
         setCoordinatesUpdated(false);
       }
       if (positionChanged) {
-        changePosition(lat, long, mapRef);
+        changePosition();
         updateCordinates();
         setPositionChanged(false);
       }
@@ -98,9 +99,7 @@ export default function MapOnScreen({
     })();
     return () => {
       clearInterval(intervalID);
-      async () => {
-        await watcher.remove();
-      };
+      watcher.remove();
     };
   }, [positionChanged, coordinatesUpdated]);
 
@@ -120,8 +119,6 @@ export default function MapOnScreen({
         <Marker
           coordinate={{ latitude: lat, longitude: long }}
           pinColor={"red"}
-          title={"title"}
-          description={"description"}
         />
         <Polyline
           coordinates={cordsArr}
@@ -131,9 +128,7 @@ export default function MapOnScreen({
           strokeWidth={6}
         />
       </MapView>
-      <Text>
-        {new Date(runTime * 1000).toISOString().substr(11, 8)}{" "}
-      </Text>
+      <Text>{new Date(runTime * 1000).toISOString().substr(11, 8)} </Text>
       <Button
         style={styles.endButton}
         title="End"
