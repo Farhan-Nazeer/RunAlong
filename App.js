@@ -6,10 +6,13 @@ import * as Location from "expo-location";
 import MapOnScreen from "./components/Run";
 import Home from "./components/Home";
 import End from "./components/End";
+import Settings from "./components/Settings";
 
 const DEFAULT_POSITION = 4;
 
 export default function App() {
+  const [units, setUnits] = useState("km");
+
   //TODO: figure out actual intial states for lat long
   const [latitudeValue, setLatitudeValue] = useState(DEFAULT_POSITION);
   const [longitudeValue, setLongitudeValue] = useState(DEFAULT_POSITION);
@@ -54,9 +57,9 @@ export default function App() {
           runTime={runDuration}
           setRunTime={setRunDuration}
           setRunStatus={setStatus}
+          units={units}
         />
       )}
-      {/* <Text>{text}</Text> */}
       {status == "Ended" && (
         <End
           setRunStatus={setStatus}
@@ -67,7 +70,11 @@ export default function App() {
           setCordsArr={setCordinatesArray}
           setLat={setLatitudeValue}
           setLong={setLongitudeValue}
+          units={units}
         />
+      )}
+      {status == "Settings" && (
+        <Settings setRunStatus={setStatus} setUnits={setUnits} units={units} />
       )}
       <StatusBar style="auto" />
     </SafeAreaView>

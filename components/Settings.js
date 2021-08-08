@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
-export default function Home({ setRunStatus }) {
+export default function Settings({ setRunStatus, setUnits, units }) {
   return (
     <View style={styles.container}>
       <Button
-        title="Start"
+        title="Metric"
         onPress={() => {
-          setRunStatus("Started");
+          setUnits("km");
         }}
       />
       <Button
-        title="Settings"
+        title="Imperial"
         onPress={() => {
-          setRunStatus("Settings");
+          setUnits("mi");
+        }}
+      />
+      <Text>Currently in {units}.</Text>
+      <Button
+        title="Return Home"
+        onPress={() => {
+          setRunStatus("Not Started");
         }}
       />
     </View>

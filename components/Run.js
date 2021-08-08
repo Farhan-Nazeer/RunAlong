@@ -21,12 +21,13 @@ function calcDistanceTravelled(coordinates) {
   xDistance = coordinates[0].latitude - coordinates[1].latitude;
   yDistance = coordinates[0].longitude - coordinates[1].longitude;
   distanceChange += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-  return distanceChange * DEGREES_TO_METERS;
+  return (distanceChange * DEGREES_TO_METERS) / 1000; // Need to display in kilometers
 }
 
 export default function MapOnScreen({
   lat,
   long,
+  units,
   setLat,
   setLong,
   cordsArr,
@@ -129,6 +130,13 @@ export default function MapOnScreen({
         />
       </MapView>
       <Text>{new Date(runTime * 1000).toISOString().substr(11, 8)} </Text>
+      <Text>
+        Distance Ran:{" "}
+        {units == "km"
+          ? totalDistance.toFixed(2)
+          : (totalDistance * 0.621371).toFixed(2)}{" "}
+        {units}
+      </Text>
       <Button
         style={styles.endButton}
         title="End"

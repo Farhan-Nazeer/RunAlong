@@ -12,15 +12,26 @@ export default function End({
   setCordsArr,
   setLat,
   setLong,
+  units,
 }) {
   return (
     <View style={styles.container}>
       <Text>
         Time Ran: {new Date(runTime * 1000).toISOString().substr(11, 8)}
       </Text>
-      <Text>Distance Ran: {totalDistance.toFixed(2)}</Text>
       <Text>
-        Average Speed: {((totalDistance / runTime) * 3.6).toFixed(2)} km/h
+        Distance Ran:{" "}
+        {units == "km"
+          ? totalDistance.toFixed(2)
+          : (totalDistance * 0.621371).toFixed(2)}{" "}
+        {units}
+      </Text>
+      <Text>
+        Average Speed:{" "}
+        {units == "km"
+          ? ((totalDistance / runTime) * 3600).toFixed(2)
+          : (((totalDistance * 0.621371) / runTime) * 3600).toFixed(2)}{" "}
+        {units}/h
       </Text>
       {/*TODO: - Maybe make speed a state variable
                - Also try adding commas to numbers displayed*/}
