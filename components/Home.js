@@ -7,7 +7,7 @@ export default function Home({ setRunStatus }) {
       <Button
         title="Start"
         onPress={() => {
-          setRunStatus("Started");
+          setRunStatus("Loading");
         }}
       />
       <Button

@@ -7,23 +7,19 @@ import MapOnScreen from "./components/Run";
 import Home from "./components/Home";
 import End from "./components/End";
 import Settings from "./components/Settings";
-
-const DEFAULT_POSITION = 4;
+import Loading from "./components/Loading";
 
 export default function App() {
   const [units, setUnits] = useState("km");
 
-  //TODO: figure out actual intial states for lat long
-  const [latitudeValue, setLatitudeValue] = useState(DEFAULT_POSITION);
-  const [longitudeValue, setLongitudeValue] = useState(DEFAULT_POSITION);
+  const [latitudeValue, setLatitudeValue] = useState(null);
+  const [longitudeValue, setLongitudeValue] = useState(null);
 
-  const [cordinatesArray, setCordinatesArray] = useState([
-    { latitude: DEFAULT_POSITION, longitude: DEFAULT_POSITION },
-  ]);
+  const [coordinatesArray, setCoordinatesArray] = useState([]);
 
   const [distanceTravelled, setDistanceTravelled] = useState(0);
 
-  const [status, setStatus] = useState("Not Started");
+  const [appStatus, setStatus] = useState("Not Started");
   const [runDuration, setRunDuration] = useState(0);
 
   useEffect(() => {
@@ -33,25 +29,29 @@ export default function App() {
         setErrorMsg("Permission to access location was denied");
         return;
       }
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
-      setLatitudeValue(location.coords.latitude);
-      setLongitudeValue(location.coords.longitude);
     })();
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      {status == "Not Started" && <Home setRunStatus={setStatus} />}
-      {status == "Started" && (
+      {appStatus == "Not Started" && <Home setRunStatus={setStatus} />}
+      {appStatus == "Loading" && (
+        <Loading 
+          setRunStatus={setStatus} 
+          setLat={setLatitudeValue} 
+          setLong={setLongitudeValue}
+          lat={latitudeValue}
+          long={longitudeValue}
+          setCordsArr={setCoordinatesArray}/>
+      )}
+      {appStatus == "Started" && (
         <MapOnScreen
           lat={latitudeValue}
           long={longitudeValue}
           setLat={setLatitudeValue}
           setLong={setLongitudeValue}
-          cordsArr={cordinatesArray}
-          setCordsArr={setCordinatesArray}
+          cordsArr={coordinatesArray}
+          setCordsArr={setCoordinatesArray}
           totalDistance={distanceTravelled}
           setTotalDistance={setDistanceTravelled}
           runTime={runDuration}
@@ -60,20 +60,20 @@ export default function App() {
           units={units}
         />
       )}
-      {status == "Ended" && (
+      {appStatus == "Ended" && (
         <End
           setRunStatus={setStatus}
           runTime={runDuration}
           setRunTime={setRunDuration}
           totalDistance={distanceTravelled}
           setTotalDistance={setDistanceTravelled}
-          setCordsArr={setCordinatesArray}
+          setCordsArr={setCoordinatesArray}
           setLat={setLatitudeValue}
           setLong={setLongitudeValue}
           units={units}
         />
       )}
-      {status == "Settings" && (
+      {appStatus == "Settings" && (
         <Settings setRunStatus={setStatus} setUnits={setUnits} units={units} />
       )}
       <StatusBar style="auto" />
