@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import MapView, { Marker, Polyline } from "react-native-maps";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
-const DEFAULT_POSITION = 4;
+//const DEFAULT_POSITION = 4;
 
 export default function End({
   setRunStatus,
@@ -10,12 +11,35 @@ export default function End({
   totalDistance,
   setTotalDistance,
   setCordsArr,
+  cordsArr,
   setLat,
   setLong,
   units,
 }) {
   return (
     <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: cordsArr[Math.floor(cordsArr.length/2)].latitude,
+          longitude: cordsArr[Math.floor(cordsArr.length/2)].longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        provider="google"
+      >
+        <Marker
+          coordinate={{ latitude: cordsArr[cordsArr.length-1].latitude, longitude: cordsArr[cordsArr.length-1].longitude }}
+          pinColor={"red"}
+        />
+        <Polyline
+          coordinates={cordsArr}
+          lineDashPattern={[1]}
+          lineCap="butt"
+          strokeColor="purple"
+          strokeWidth={6}
+        />
+      </MapView>
       <Text>
         Time Ran: {new Date(runTime * 1000).toISOString().substr(11, 8)}
       </Text>
@@ -41,11 +65,9 @@ export default function End({
           setRunTime(0);
           setRunStatus("Not Started");
           setTotalDistance(0);
-          setCordsArr([
-            { latitude: DEFAULT_POSITION, longitude: DEFAULT_POSITION },
-          ]);
-          setLat(DEFAULT_POSITION);
-          setLong(DEFAULT_POSITION);
+          setCordsArr([]);
+          setLat(null);
+          setLong(null);
         }}
       />
     </View>
@@ -58,5 +80,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    paddingBottom: 30
+  },
+  map: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });

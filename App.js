@@ -68,6 +68,7 @@ export default function App() {
           totalDistance={distanceTravelled}
           setTotalDistance={setDistanceTravelled}
           setCordsArr={setCoordinatesArray}
+          cordsArr={coordinatesArray}
           setLat={setLatitudeValue}
           setLong={setLongitudeValue}
           units={units}

@@ -13,9 +13,6 @@ import * as Location from "expo-location";
   - Figure out why marker updates but polyline and animate to region dont work on second run of app on Farhan's phone
   - Polyline and animate to region both end up updating, but a lot after the marker and they update together. Figure out
   how to make this update faster
-  - Check if first position found in App.js stays as first point in Run.js as well (If it does, we need to get the current 
-    position somewhere else, maybe Loading.js)
-  - Make the map zoom bigger so that you see less of your surroundings
 */
 const DEGREES_TO_METERS = 111139;
 
@@ -115,8 +112,8 @@ export default function MapOnScreen({
         initialRegion={{
           latitude: lat,
           longitude: long,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitudeDelta: 0.0922*0.5,
+          longitudeDelta: 0.0421*0.5,
         }}
         provider="google"
       >
@@ -157,6 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    paddingBottom: 30
   },
   map: {
     width: Dimensions.get("window").width,
