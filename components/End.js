@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
+const mapStyles = require('../assets/map_styles');
+
 //const DEFAULT_POSITION = 4;
 
 export default function End({
@@ -15,11 +17,14 @@ export default function End({
   setLat,
   setLong,
   units,
+  mapStyle
 }) {
+  const mapStyleEnd = mapStyle == "standard" ? null : mapStyles[mapStyle];
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
+        customMapStyle={mapStyleEnd}
         initialRegion={{
           latitude: cordsArr[Math.floor(cordsArr.length/2)].latitude,
           longitude: cordsArr[Math.floor(cordsArr.length/2)].longitude,

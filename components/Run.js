@@ -9,6 +9,9 @@ import {
   Button,
 } from "react-native";
 import * as Location from "expo-location";
+
+const mapStyles = require('../assets/map_styles')
+
 /*TODO:
   - Figure out why marker updates but polyline and animate to region dont work on second run of app on Farhan's phone
   - Polyline and animate to region both end up updating, but a lot after the marker and they update together. Figure out
@@ -37,7 +40,11 @@ export default function MapOnScreen({
   runTime,
   setRunTime,
   setRunStatus,
+  mapStyle
 }) {
+
+  // const mapStyleRun = (mapStyle == "Standard") ? null : mapStyles[mapStyle] // What do I put here
+  const mapStyleRun = mapStyle == "standard" ? null : mapStyles[mapStyle];
   const mapRef = React.useRef(null);
   const [positionChanged, setPositionChanged] = useState(false);
   const [coordinatesUpdated, setCoordinatesUpdated] = useState(false);
@@ -109,6 +116,7 @@ export default function MapOnScreen({
       <MapView
         ref={mapRef}
         style={styles.map}
+        customMapStyle={mapStyleRun}
         initialRegion={{
           latitude: lat,
           longitude: long,

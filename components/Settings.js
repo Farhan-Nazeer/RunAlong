@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
-export default function Settings({ setRunStatus, setUnits, units }) {
+export default function Settings({ setRunStatus, setUnits, units, mapStyle, setMapStyle }) {
   return (
     <View style={styles.container}>
       <Button
@@ -17,6 +17,37 @@ export default function Settings({ setRunStatus, setUnits, units }) {
         }}
       />
       <Text>Currently in {units}.</Text>
+      <Button
+        title="Standard"
+        onPress={() => {
+          setMapStyle("standard");
+        }}
+      />
+      <Button
+        title="Retro"
+        onPress={() => {
+          setMapStyle("retro");
+        }}
+      />
+      <Button
+        title="Dark"
+        onPress={() => {
+          setMapStyle("dark");
+        }}
+      />
+      <Button
+        title="Night"
+        onPress={() => {
+          setMapStyle("night");
+        }}
+      />
+      <Button
+        title="Aubergine"
+        onPress={() => {
+          setMapStyle("aubergine");
+        }}
+      />
+      <Text>Current map theme is {mapStyle}.</Text>
       <Button
         title="Return Home"
         onPress={() => {

@@ -12,6 +12,8 @@ import Loading from "./components/Loading";
 export default function App() {
   const [units, setUnits] = useState("km");
 
+  const [mapStyle, setMapStyle] = useState("standard");
+
   const [latitudeValue, setLatitudeValue] = useState(null);
   const [longitudeValue, setLongitudeValue] = useState(null);
 
@@ -58,6 +60,7 @@ export default function App() {
           setRunTime={setRunDuration}
           setRunStatus={setStatus}
           units={units}
+          mapStyle={mapStyle}
         />
       )}
       {appStatus == "Ended" && (
@@ -72,10 +75,11 @@ export default function App() {
           setLat={setLatitudeValue}
           setLong={setLongitudeValue}
           units={units}
+          mapStyle={mapStyle}
         />
       )}
       {appStatus == "Settings" && (
-        <Settings setRunStatus={setStatus} setUnits={setUnits} units={units} />
+        <Settings setRunStatus={setStatus} setUnits={setUnits} units={units} mapStyle={mapStyle} setMapStyle={setMapStyle}/>
       )}
       <StatusBar style="auto" />
     </SafeAreaView>
