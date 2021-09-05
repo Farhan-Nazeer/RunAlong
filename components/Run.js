@@ -9,8 +9,9 @@ import {
   Button,
 } from "react-native";
 import * as Location from "expo-location";
+import { Pedometer } from "expo-sensors";
 
-const mapStyles = require('../assets/map_styles')
+const mapStyles = require("../assets/map_styles");
 
 /*TODO:
   - Figure out why marker updates but polyline and animate to region dont work on second run of app on Farhan's phone
@@ -40,14 +41,17 @@ export default function MapOnScreen({
   runTime,
   setRunTime,
   setRunStatus,
-  mapStyle
+  mapStyle,
+  movementOption,
+  stepsWalked,
+  setStepsWalked,
 }) {
-
   // const mapStyleRun = (mapStyle == "Standard") ? null : mapStyles[mapStyle] // What do I put here
   const mapStyleRun = mapStyle == "standard" ? null : mapStyles[mapStyle];
   const mapRef = React.useRef(null);
   const [positionChanged, setPositionChanged] = useState(false);
   const [coordinatesUpdated, setCoordinatesUpdated] = useState(false);
+  const [pedAvailable, setPedAvailable] = useState(false);
 
   changePosition = () => {
     if (mapRef.current) {
@@ -77,8 +81,21 @@ export default function MapOnScreen({
     ]);
     setCoordinatesUpdated(true);
   };
-
+  // TODO: Get pedometer thing to work
   useEffect(() => {
+    this._subscription = Pedometer.watchStepCount((result) => {
+      setStepsWalked(1);
+    });
+
+    Pedometer.isAvailableAsync().then(
+      (result) => {
+        setPedAvailable(String(result));
+      },
+      (error) => {
+        setPedAvailable("Not available");
+      }
+    );
+
     const intervalID = setInterval(() => {
       setRunTime((runTime) => runTime + 1);
     }, 1000);
@@ -108,6 +125,8 @@ export default function MapOnScreen({
     return () => {
       clearInterval(intervalID);
       watcher.remove();
+      this._subscription && this._subscription.remove();
+      this._subscription = null;
     };
   }, [positionChanged, coordinatesUpdated]);
 
@@ -120,8 +139,8 @@ export default function MapOnScreen({
         initialRegion={{
           latitude: lat,
           longitude: long,
-          latitudeDelta: 0.0922*0.5,
-          longitudeDelta: 0.0421*0.5,
+          latitudeDelta: 0.0922 * 0.5,
+          longitudeDelta: 0.0421 * 0.5,
         }}
         provider="google"
       >
@@ -138,8 +157,13 @@ export default function MapOnScreen({
         />
       </MapView>
       <Text>{new Date(runTime * 1000).toISOString().substr(11, 8)} </Text>
+      {movementOption == "Walking" && (
+        <Text>
+          Number of Steps: {stepsWalked} {pedAvailable}
+        </Text>
+      )}
       <Text>
-        Distance Ran:{" "}
+        Distance:{" "}
         {units == "km"
           ? totalDistance.toFixed(2)
           : (totalDistance * 0.621371).toFixed(2)}{" "}
@@ -162,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   map: {
     width: Dimensions.get("window").width,

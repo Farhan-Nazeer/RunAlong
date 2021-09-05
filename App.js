@@ -14,12 +14,16 @@ export default function App() {
 
   const [mapStyle, setMapStyle] = useState("standard");
 
+  const [movementOption, setMovementOption] = useState("Running");
+
   const [latitudeValue, setLatitudeValue] = useState(null);
   const [longitudeValue, setLongitudeValue] = useState(null);
 
   const [coordinatesArray, setCoordinatesArray] = useState([]);
 
   const [distanceTravelled, setDistanceTravelled] = useState(0);
+
+  const [stepsWalked, setStepsWalked] = useState(0);
 
   const [appStatus, setStatus] = useState("Not Started");
   const [runDuration, setRunDuration] = useState(0);
@@ -36,15 +40,18 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {appStatus == "Not Started" && <Home setRunStatus={setStatus} />}
+      {appStatus == "Not Started" && (
+        <Home setRunStatus={setStatus} setMovementOption={setMovementOption} />
+      )}
       {appStatus == "Loading" && (
-        <Loading 
-          setRunStatus={setStatus} 
-          setLat={setLatitudeValue} 
+        <Loading
+          setRunStatus={setStatus}
+          setLat={setLatitudeValue}
           setLong={setLongitudeValue}
           lat={latitudeValue}
           long={longitudeValue}
-          setCordsArr={setCoordinatesArray}/>
+          setCordsArr={setCoordinatesArray}
+        />
       )}
       {appStatus == "Started" && (
         <MapOnScreen
@@ -61,6 +68,9 @@ export default function App() {
           setRunStatus={setStatus}
           units={units}
           mapStyle={mapStyle}
+          movementOption={movementOption}
+          stepsWalked={stepsWalked}
+          setStepsWalked={setStepsWalked}
         />
       )}
       {appStatus == "Ended" && (
@@ -76,20 +86,30 @@ export default function App() {
           setLong={setLongitudeValue}
           units={units}
           mapStyle={mapStyle}
+          movementOption={movementOption}
+          stepsWalked={stepsWalked}
+          setStepsWalked={setStepsWalked}
         />
       )}
       {appStatus == "Settings" && (
-        <Settings setRunStatus={setStatus} setUnits={setUnits} units={units} mapStyle={mapStyle} setMapStyle={setMapStyle}/>
+        <Settings
+          setRunStatus={setStatus}
+          setUnits={setUnits}
+          units={units}
+          mapStyle={mapStyle}
+          setMapStyle={setMapStyle}
+        />
       )}
       <StatusBar style="auto" />
     </SafeAreaView>
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#aaa",
+    backgroundColor: "#161A17",
     alignItems: "center",
     justifyContent: "center",
   },

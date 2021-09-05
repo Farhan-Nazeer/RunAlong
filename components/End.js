@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
-const mapStyles = require('../assets/map_styles');
+const mapStyles = require("../assets/map_styles");
 
 //const DEFAULT_POSITION = 4;
 
@@ -17,7 +17,10 @@ export default function End({
   setLat,
   setLong,
   units,
-  mapStyle
+  mapStyle,
+  movementOption,
+  stepsWalked,
+  setStepsWalked,
 }) {
   const mapStyleEnd = mapStyle == "standard" ? null : mapStyles[mapStyle];
   return (
@@ -26,15 +29,18 @@ export default function End({
         style={styles.map}
         customMapStyle={mapStyleEnd}
         initialRegion={{
-          latitude: cordsArr[Math.floor(cordsArr.length/2)].latitude,
-          longitude: cordsArr[Math.floor(cordsArr.length/2)].longitude,
+          latitude: cordsArr[Math.floor(cordsArr.length / 2)].latitude,
+          longitude: cordsArr[Math.floor(cordsArr.length / 2)].longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
         provider="google"
       >
         <Marker
-          coordinate={{ latitude: cordsArr[cordsArr.length-1].latitude, longitude: cordsArr[cordsArr.length-1].longitude }}
+          coordinate={{
+            latitude: cordsArr[cordsArr.length - 1].latitude,
+            longitude: cordsArr[cordsArr.length - 1].longitude,
+          }}
           pinColor={"red"}
         />
         <Polyline
@@ -45,23 +51,26 @@ export default function End({
           strokeWidth={6}
         />
       </MapView>
+      <Text>Time: {new Date(runTime * 1000).toISOString().substr(11, 8)}</Text>
+      {movementOption == "Walking" && (
+        <Text>Number of Steps: {stepsWalked}</Text>
+      )}
       <Text>
-        Time Ran: {new Date(runTime * 1000).toISOString().substr(11, 8)}
-      </Text>
-      <Text>
-        Distance Ran:{" "}
+        Distance:{" "}
         {units == "km"
           ? totalDistance.toFixed(2)
           : (totalDistance * 0.621371).toFixed(2)}{" "}
         {units}
       </Text>
-      <Text>
-        Average Speed:{" "}
-        {units == "km"
-          ? ((totalDistance / runTime) * 3600).toFixed(2)
-          : (((totalDistance * 0.621371) / runTime) * 3600).toFixed(2)}{" "}
-        {units}/h
-      </Text>
+      {movementOption == "Running" && (
+        <Text>
+          Average Speed:{" "}
+          {units == "km"
+            ? ((totalDistance / runTime) * 3600).toFixed(2)
+            : (((totalDistance * 0.621371) / runTime) * 3600).toFixed(2)}{" "}
+          {units}/h
+        </Text>
+      )}
       {/*TODO: - Maybe make speed a state variable
                - Also try adding commas to numbers displayed*/}
       <Button
@@ -85,7 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   map: {
     width: Dimensions.get("window").width,
