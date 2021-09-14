@@ -1,4 +1,4 @@
-# Run Along
+# Run Along (Ongoing)
 
 A mobile app built in React Native that tracks run data including distance, speed, and time, using the Google Maps API. 
 
