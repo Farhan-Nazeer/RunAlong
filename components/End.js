@@ -72,14 +72,14 @@ export default function End(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
+    backgroundColor: "#fff",
+    flex: 1,
     justifyContent: "center",
     paddingBottom: 30,
   },
   map: {
-    width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
   },
 });

@@ -14,7 +14,7 @@ const mapStyles = require("../assets/map_styles");
 
 const DEGREES_TO_METERS = 111139;
 
-function calcDistanceTravelled(coordinates) {
+const calcDistanceTravelled = (coordinates) => {
   let distanceChange = 0;
   xDistance = coordinates[0].latitude - coordinates[1].latitude;
   yDistance = coordinates[0].longitude - coordinates[1].longitude;
@@ -156,15 +156,15 @@ export default function MapOnScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
+    backgroundColor: "#fff",
+    flex: 1,
     justifyContent: "center",
     paddingBottom: 30,
   },
   map: {
-    width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
   },
   endButton: {
     zIndex: 1,
