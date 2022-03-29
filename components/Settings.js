@@ -1,57 +1,57 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
-export default function Settings({ setRunStatus, setUnits, units, mapStyle, setMapStyle }) {
+export default function Settings(props) {
   return (
     <View style={styles.container}>
       <Button
         title="Metric"
         onPress={() => {
-          setUnits("km");
+          props.setUnits("km");
         }}
       />
       <Button
         title="Imperial"
         onPress={() => {
-          setUnits("mi");
+          props.setUnits("mi");
         }}
       />
-      <Text>Currently in {units}.</Text>
+      <Text>Currently in {props.units}.</Text>
       <Button
         title="Standard"
         onPress={() => {
-          setMapStyle("standard");
+          props.setMapStyle("standard");
         }}
       />
       <Button
         title="Retro"
         onPress={() => {
-          setMapStyle("retro");
+          props.setMapStyle("retro");
         }}
       />
       <Button
         title="Dark"
         onPress={() => {
-          setMapStyle("dark");
+          props.setMapStyle("dark");
         }}
       />
       <Button
         title="Night"
         onPress={() => {
-          setMapStyle("night");
+          props.setMapStyle("night");
         }}
       />
       <Button
         title="Aubergine"
         onPress={() => {
-          setMapStyle("aubergine");
+          props.setMapStyle("aubergine");
         }}
       />
-      <Text>Current map theme is {mapStyle}.</Text>
+      <Text>Current map theme is {props.mapStyle}.</Text>
       <Button
         title="Return Home"
         onPress={() => {
-          setRunStatus("Not Started");
+          props.setRunStatus("Not Started");
         }}
       />
     </View>

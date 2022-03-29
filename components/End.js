@@ -4,33 +4,16 @@ import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
 const mapStyles = require("../assets/map_styles");
 
-//const DEFAULT_POSITION = 4;
-
-export default function End({
-  setRunStatus,
-  runTime,
-  setRunTime,
-  totalDistance,
-  setTotalDistance,
-  setCordsArr,
-  cordsArr,
-  setLat,
-  setLong,
-  units,
-  mapStyle,
-  movementOption,
-  stepsWalked,
-  setStepsWalked,
-}) {
-  const mapStyleEnd = mapStyle == "standard" ? null : mapStyles[mapStyle];
+export default function End(props) {
+  const mapStyleEnd = props.mapStyle == "standard" ? null : mapStyles[props.mapStyle];
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         customMapStyle={mapStyleEnd}
         initialRegion={{
-          latitude: cordsArr[Math.floor(cordsArr.length / 2)].latitude,
-          longitude: cordsArr[Math.floor(cordsArr.length / 2)].longitude,
+          latitude: props.cordsArr[Math.floor(props.cordsArr.length / 2)].latitude,
+          longitude: props.cordsArr[Math.floor(props.cordsArr.length / 2)].longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -38,50 +21,49 @@ export default function End({
       >
         <Marker
           coordinate={{
-            latitude: cordsArr[cordsArr.length - 1].latitude,
-            longitude: cordsArr[cordsArr.length - 1].longitude,
+            latitude: props.cordsArr[props.cordsArr.length - 1].latitude,
+            longitude: props.cordsArr[props.cordsArr.length - 1].longitude,
           }}
           pinColor={"red"}
         />
         <Polyline
-          coordinates={cordsArr}
+          coordinates={props.cordsArr}
           lineDashPattern={[1]}
           lineCap="butt"
           strokeColor="purple"
           strokeWidth={6}
         />
       </MapView>
-      <Text>Time: {new Date(runTime * 1000).toISOString().substr(11, 8)}</Text>
-      {movementOption == "Walking" && (
-        <Text>Number of Steps: {stepsWalked}</Text>
+      <Text>Time: {new Date(props.runTime * 1000).toISOString().substr(11, 8)}</Text>
+      {props.movementOption == "Walking" && (
+        <Text>Number of Steps: {props.stepsWalked}</Text>
       )}
       <Text>
         Distance:{" "}
-        {units == "km"
-          ? totalDistance.toFixed(2)
-          : (totalDistance * 0.621371).toFixed(2)}{" "}
-        {units}
+        {props.units == "km"
+          ? props.totalDistance.toFixed(2)
+          : (props.totalDistance * 0.621371).toFixed(2)}{" "}
+        {props.units}
       </Text>
-      {movementOption == "Running" && (
+      {props.movementOption == "Running" && (
         <Text>
           Average Speed:{" "}
-          {units == "km"
-            ? ((totalDistance / runTime) * 3600).toFixed(2)
-            : (((totalDistance * 0.621371) / runTime) * 3600).toFixed(2)}{" "}
-          {units}/h
+          {props.units == "km"
+            ? ((props.totalDistance / props.runTime) * 3600).toFixed(2)
+            : (((props.totalDistance * 0.621371) / props.runTime) * 3600).toFixed(2)}{" "}
+          {props.units}/h
         </Text>
       )}
-      {/*TODO: - Maybe make speed a state variable
-               - Also try adding commas to numbers displayed*/}
+
       <Button
         title="Return Home"
         onPress={() => {
-          setRunTime(0);
-          setRunStatus("Not Started");
-          setTotalDistance(0);
-          setCordsArr([]);
-          setLat(null);
-          setLong(null);
+          props.setRunTime(0);
+          props.setRunStatus("Not Started");
+          props.setTotalDistance(0);
+          props.setCordsArr([]);
+          props.setLat(null);
+          props.setLong(null);
         }}
       />
     </View>

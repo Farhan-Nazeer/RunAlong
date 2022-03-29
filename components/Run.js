@@ -1,4 +1,3 @@
-//import * as React from "react";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import React, { useState, useEffect } from "react";
 import {
@@ -13,11 +12,6 @@ import { Pedometer } from "expo-sensors";
 
 const mapStyles = require("../assets/map_styles");
 
-/*TODO:
-  - Figure out why marker updates but polyline and animate to region dont work on second run of app on Farhan's phone
-  - Polyline and animate to region both end up updating, but a lot after the marker and they update together. Figure out
-  how to make this update faster
-*/
 const DEGREES_TO_METERS = 111139;
 
 function calcDistanceTravelled(coordinates) {
@@ -25,29 +19,11 @@ function calcDistanceTravelled(coordinates) {
   xDistance = coordinates[0].latitude - coordinates[1].latitude;
   yDistance = coordinates[0].longitude - coordinates[1].longitude;
   distanceChange += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-  return (distanceChange * DEGREES_TO_METERS) / 1000; // Need to display in kilometers
+  return (distanceChange * DEGREES_TO_METERS) / 1000;
 }
 
-export default function MapOnScreen({
-  lat,
-  long,
-  units,
-  setLat,
-  setLong,
-  cordsArr,
-  setCordsArr,
-  totalDistance,
-  setTotalDistance,
-  runTime,
-  setRunTime,
-  setRunStatus,
-  mapStyle,
-  movementOption,
-  stepsWalked,
-  setStepsWalked,
-}) {
-  // const mapStyleRun = (mapStyle == "Standard") ? null : mapStyles[mapStyle] // What do I put here
-  const mapStyleRun = mapStyle == "standard" ? null : mapStyles[mapStyle];
+export default function MapOnScreen(props) {
+  const mapStyleRun = props.mapStyle == "standard" ? null : mapStyles[props.mapStyle];
   const mapRef = React.useRef(null);
   const [positionChanged, setPositionChanged] = useState(false);
   const [coordinatesUpdated, setCoordinatesUpdated] = useState(false);
@@ -57,8 +33,8 @@ export default function MapOnScreen({
     if (mapRef.current) {
       mapRef.current.animateToRegion(
         {
-          latitude: lat,
-          longitude: long,
+          latitude: props.lat,
+          longitude: props.long,
           latitudeDelta: 0.04,
           longitudeDelta: 0.04,
         },
@@ -69,22 +45,22 @@ export default function MapOnScreen({
 
   onNewPosition = (location) => {
     console.log("position changed");
-    setLat(location.coords.latitude);
-    setLong(location.coords.longitude);
+    props.setLat(location.coords.latitude);
+    props.setLong(location.coords.longitude);
     setPositionChanged(true);
   };
 
   updateCordinates = () => {
-    setCordsArr((cordsArr) => [
+    props.setCordsArr((cordsArr) => [
       ...cordsArr,
-      { latitude: lat, longitude: long },
+      { latitude: props.lat, longitude: props.long },
     ]);
     setCoordinatesUpdated(true);
   };
-  // TODO: Get pedometer thing to work
+
   useEffect(() => {
     this._subscription = Pedometer.watchStepCount((result) => {
-      setStepsWalked(1);
+      props.setStepsWalked(1);
     });
 
     Pedometer.isAvailableAsync().then(
@@ -97,21 +73,19 @@ export default function MapOnScreen({
     );
 
     const intervalID = setInterval(() => {
-      setRunTime((runTime) => runTime + 1);
+      props.setRunTime((runTime) => runTime + 1);
     }, 1000);
 
     (async () => {
       const options = {
         enableHighAccuracy: true,
-        //accuracy: Location.Accuracy.Low,
         timeInterval: 10,
-        distanceInterval: 1, //can be 1 or 0
+        distanceInterval: 1, 
       };
       watcher = await Location.watchPositionAsync(options, onNewPosition);
-      // Try to reverse order of distance and position changed if cant calc distance properly
       if (coordinatesUpdated) {
-        newDistance = totalDistance + calcDistanceTravelled(cordsArr.slice(-2));
-        setTotalDistance(newDistance); //Maybe make this own function to match other "set" calls
+        newDistance = props.totalDistance + calcDistanceTravelled(cordsArr.slice(-2));
+        props.setTotalDistance(newDistance);
         setCoordinatesUpdated(false);
       }
       if (positionChanged) {
@@ -120,7 +94,7 @@ export default function MapOnScreen({
         setPositionChanged(false);
       }
 
-      console.log(lat, long, totalDistance);
+      console.log(props.lat, props.long, props.totalDistance);
     })();
     return () => {
       clearInterval(intervalID);
@@ -137,43 +111,43 @@ export default function MapOnScreen({
         style={styles.map}
         customMapStyle={mapStyleRun}
         initialRegion={{
-          latitude: lat,
-          longitude: long,
+          latitude: props.lat,
+          longitude: props.long,
           latitudeDelta: 0.0922 * 0.5,
           longitudeDelta: 0.0421 * 0.5,
         }}
         provider="google"
       >
         <Marker
-          coordinate={{ latitude: lat, longitude: long }}
+          coordinate={{ latitude: props.lat, longitude: props.long }}
           pinColor={"red"}
         />
         <Polyline
-          coordinates={cordsArr}
+          coordinates={props.cordsArr}
           lineDashPattern={[1]}
           lineCap="butt"
           strokeColor="purple"
           strokeWidth={6}
         />
       </MapView>
-      <Text>{new Date(runTime * 1000).toISOString().substr(11, 8)} </Text>
-      {movementOption == "Walking" && (
+      <Text>{new Date(props.runTime * 1000).toISOString().substr(11, 8)} </Text>
+      {props.movementOption == "Walking" && (
         <Text>
-          Number of Steps: {stepsWalked} {pedAvailable}
+          Number of Steps: {props.stepsWalked} {pedAvailable}
         </Text>
       )}
       <Text>
         Distance:{" "}
-        {units == "km"
-          ? totalDistance.toFixed(2)
-          : (totalDistance * 0.621371).toFixed(2)}{" "}
-        {units}
+        {props.units == "km"
+          ? props.totalDistance.toFixed(2)
+          : (props.totalDistance * 0.621371).toFixed(2)}{" "}
+        {props.units}
       </Text>
       <Button
         style={styles.endButton}
         title="End"
         onPress={() => {
-          setRunStatus("Ended");
+          props.setRunStatus("Ended");
         }}
       />
     </SafeAreaView>

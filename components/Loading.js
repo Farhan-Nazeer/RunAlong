@@ -2,21 +2,21 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 import * as Location from "expo-location";
 
-export default function Loading({ setRunStatus, setLat, setLong, lat, long, setCordsArr}) {
+export default function Loading(props) {
 
   useEffect(() => {
     (async () => {
       let location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
-      setLat(location.coords.latitude);
-      setLong(location.coords.longitude);
-      if (lat && long){
-        setRunStatus("Started");
-        setCordsArr([{ latitude: lat, longitude: long }]); //This is needed for polyline and animateToRegion to work on map for some reason
+      props.setLat(location.coords.latitude);
+      props.setLong(location.coords.longitude);
+      if (props.lat && props.long){
+        props.setRunStatus("Started");
+        props.setCordsArr([{ latitude: props.lat, longitude: props.long }]);
       }
     })();
-  }, [lat, long]);
+  }, [props.lat, props.long]);
   
   return (
     <View style={styles.container}>

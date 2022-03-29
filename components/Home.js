@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, Button, TouchableHighlight, Image } from "react-native";
 
-export default function Home({ setRunStatus, setMovementOption }) {
+export default function Home(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Run Along</Text>
       <TouchableHighlight onPress={() => {
-          setRunStatus("Loading");
-          setMovementOption("Running");
+          props.setRunStatus("Loading");
+          props.setMovementOption("Running");
         }}>
         <View style={styles.circle}>
           <View style={styles.radius}></View>
@@ -22,16 +22,9 @@ export default function Home({ setRunStatus, setMovementOption }) {
               </View>
         </View>
       </TouchableHighlight>
-      {/* <Button
-        title="Walk"
-        onPress={() => {
-          setRunStatus("Loading");
-          setMovementOption("Walking");
-        }}
-      /> */}
       <View style={styles.settings}>
         <TouchableHighlight onPress={() => {
-            setRunStatus("Settings");
+            props.setRunStatus("Settings");
           }}>
           <Image style={styles.gear} source={require('../assets/gear.png')} />
         </TouchableHighlight>
@@ -56,8 +49,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 296 / 2,
     backgroundColor: '#137B70',
-    // borderColor: "white",
-    // borderWidth: 1
   },
   circle2: {
     width: 236,
@@ -138,5 +129,3 @@ const styles = StyleSheet.create({
     color: "white"
   }
 });
-
-//#5DA31C
