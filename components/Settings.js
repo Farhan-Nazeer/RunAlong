@@ -1,9 +1,72 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Button,
+  Image,
+  TouchableHighlight,
+} from "react-native";
 
 export default function Settings(props) {
   return (
     <View style={styles.container}>
+      <TouchableHighlight
+        onPress={() => {
+          props.setMapStyle("standard");
+        }}
+      >
+        <Image
+          style={styles.mapImages}
+          source={require("../assets/map_images/standard.png")}
+        />
+      </TouchableHighlight>
+
+      <TouchableHighlight
+        onPress={() => {
+          props.setMapStyle("retro");
+        }}
+      >
+        <Image
+          style={styles.mapImages}
+          source={require("../assets/map_images/retro.png")}
+        />
+      </TouchableHighlight>
+
+      <TouchableHighlight
+        onPress={() => {
+          props.setMapStyle("dark");
+        }}
+      >
+        <Image
+          style={styles.mapImages}
+          source={require("../assets/map_images/dark.png")}
+        />
+      </TouchableHighlight>
+
+      <TouchableHighlight
+        onPress={() => {
+          props.setMapStyle("night");
+        }}
+      >
+        <Image
+          style={styles.mapImages}
+          source={require("../assets/map_images/night.png")}
+        />
+      </TouchableHighlight>
+
+      <TouchableHighlight
+        onPress={() => {
+          props.setMapStyle("aubergine");
+        }}
+      >
+        <Image
+          style={styles.mapImages}
+          source={require("../assets/map_images/aub.png")}
+        />
+      </TouchableHighlight>
+
       <Button
         title="Metric"
         onPress={() => {
@@ -17,36 +80,6 @@ export default function Settings(props) {
         }}
       />
       <Text>Currently in {props.units}.</Text>
-      <Button
-        title="Standard"
-        onPress={() => {
-          props.setMapStyle("standard");
-        }}
-      />
-      <Button
-        title="Retro"
-        onPress={() => {
-          props.setMapStyle("retro");
-        }}
-      />
-      <Button
-        title="Dark"
-        onPress={() => {
-          props.setMapStyle("dark");
-        }}
-      />
-      <Button
-        title="Night"
-        onPress={() => {
-          props.setMapStyle("night");
-        }}
-      />
-      <Button
-        title="Aubergine"
-        onPress={() => {
-          props.setMapStyle("aubergine");
-        }}
-      />
       <Text>Current map theme is {props.mapStyle}.</Text>
       <Button
         title="Return Home"
@@ -61,8 +94,15 @@ export default function Settings(props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: "#fff",
-    flex: 1,
+    backgroundColor: "black",
     justifyContent: "center",
+    width: 400,
+  },
+  mapImages: {
+    width: 350,
+    height: 120,
+    borderRadius: 10,
+    resizeMode: "contain",
+    marginTop: 12,
   },
 });
