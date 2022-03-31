@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 
 const mapStyles = require("../assets/map_styles");
 
 export default function End(props) {
-  const mapStyleEnd = props.mapStyle == "standard" ? null : mapStyles[props.mapStyle];
+  const mapStyleEnd =
+    props.mapStyle == "standard" ? null : mapStyles[props.mapStyle];
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         customMapStyle={mapStyleEnd}
         initialRegion={{
-          latitude: props.cordsArr[Math.floor(props.cordsArr.length / 2)].latitude,
-          longitude: props.cordsArr[Math.floor(props.cordsArr.length / 2)].longitude,
+          latitude:
+            props.cordsArr[Math.floor(props.cordsArr.length / 2)].latitude,
+          longitude:
+            props.cordsArr[Math.floor(props.cordsArr.length / 2)].longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
@@ -34,7 +37,9 @@ export default function End(props) {
           strokeWidth={6}
         />
       </MapView>
-      <Text>Time: {new Date(props.runTime * 1000).toISOString().substr(11, 8)}</Text>
+      <Text>
+        Time: {new Date(props.runTime * 1000).toISOString().substr(11, 8)}
+      </Text>
       {props.movementOption == "Walking" && (
         <Text>Number of Steps: {props.stepsWalked}</Text>
       )}
@@ -50,7 +55,10 @@ export default function End(props) {
           Average Speed:{" "}
           {props.units == "km"
             ? ((props.totalDistance / props.runTime) * 3600).toFixed(2)
-            : (((props.totalDistance * 0.621371) / props.runTime) * 3600).toFixed(2)}{" "}
+            : (
+                ((props.totalDistance * 0.621371) / props.runTime) *
+                3600
+              ).toFixed(2)}{" "}
           {props.units}/h
         </Text>
       )}

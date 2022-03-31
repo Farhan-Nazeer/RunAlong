@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { Platform, Text, SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import * as Location from "expo-location";
 
 import MapOnScreen from "./components/Run";
@@ -11,20 +11,13 @@ import Loading from "./components/Loading";
 
 export default function App() {
   const [units, setUnits] = useState("km");
-
   const [mapStyle, setMapStyle] = useState("standard");
-
   const [movementOption, setMovementOption] = useState("Running");
-
   const [latitudeValue, setLatitudeValue] = useState(null);
   const [longitudeValue, setLongitudeValue] = useState(null);
-
   const [coordinatesArray, setCoordinatesArray] = useState([]);
-
   const [distanceTravelled, setDistanceTravelled] = useState(0);
-
   const [stepsWalked, setStepsWalked] = useState(0);
-
   const [appStatus, setStatus] = useState("Not Started");
   const [runDuration, setRunDuration] = useState(0);
 

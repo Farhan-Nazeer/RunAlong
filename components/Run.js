@@ -5,7 +5,7 @@ import {
   Text,
   SafeAreaView,
   Dimensions,
-  Button,
+  TouchableHighlight,
 } from "react-native";
 import * as Location from "expo-location";
 import { Pedometer } from "expo-sensors";
@@ -20,10 +20,11 @@ const calcDistanceTravelled = (coordinates) => {
   yDistance = coordinates[0].longitude - coordinates[1].longitude;
   distanceChange += Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
   return (distanceChange * DEGREES_TO_METERS) / 1000;
-}
+};
 
 export default function MapOnScreen(props) {
-  const mapStyleRun = props.mapStyle == "standard" ? null : mapStyles[props.mapStyle];
+  const mapStyleRun =
+    props.mapStyle == "standard" ? null : mapStyles[props.mapStyle];
   const mapRef = React.useRef(null);
   const [positionChanged, setPositionChanged] = useState(false);
   const [coordinatesUpdated, setCoordinatesUpdated] = useState(false);
@@ -80,11 +81,12 @@ export default function MapOnScreen(props) {
       const options = {
         enableHighAccuracy: true,
         timeInterval: 10,
-        distanceInterval: 1, 
+        distanceInterval: 1,
       };
       watcher = await Location.watchPositionAsync(options, onNewPosition);
       if (coordinatesUpdated) {
-        newDistance = props.totalDistance + calcDistanceTravelled(cordsArr.slice(-2));
+        newDistance =
+          props.totalDistance + calcDistanceTravelled(cordsArr.slice(-2));
         props.setTotalDistance(newDistance);
         setCoordinatesUpdated(false);
       }
@@ -130,26 +132,28 @@ export default function MapOnScreen(props) {
           strokeWidth={6}
         />
       </MapView>
-      <Text>{new Date(props.runTime * 1000).toISOString().substr(11, 8)} </Text>
+      <Text style={styles.text}>
+        {new Date(props.runTime * 1000).toISOString().substr(11, 8)}{" "}
+      </Text>
       {props.movementOption == "Walking" && (
-        <Text>
+        <Text style={styles.text}>
           Number of Steps: {props.stepsWalked} {pedAvailable}
         </Text>
       )}
-      <Text>
+      <Text style={styles.text}>
         Distance:{" "}
         {props.units == "km"
           ? props.totalDistance.toFixed(2)
           : (props.totalDistance * 0.621371).toFixed(2)}{" "}
         {props.units}
       </Text>
-      <Button
-        style={styles.endButton}
-        title="End"
+      <TouchableHighlight
         onPress={() => {
           props.setRunStatus("Ended");
         }}
-      />
+      >
+        <Text style={styles.endButton}>END</Text>
+      </TouchableHighlight>
     </SafeAreaView>
   );
 }
@@ -157,16 +161,29 @@ export default function MapOnScreen(props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#252525",
     flex: 1,
     justifyContent: "center",
     paddingBottom: 30,
   },
+  text: {
+    fontFamily: "sans-serif-medium",
+    fontSize: 15,
+    color: "white",
+  },
   map: {
-    height: Dimensions.get("window").height,
+    height: Dimensions.get("window").height - 50,
+    marginBottom: 7,
     width: Dimensions.get("window").width,
   },
   endButton: {
+    backgroundColor: "black",
+    color: "white",
+    fontFamily: "sans-serif-medium",
+    fontWeight: "700",
+    fontSize: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
     zIndex: 1,
   },
 });

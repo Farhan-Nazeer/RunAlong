@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import Icon from "react-native-vector-icons/AntDesign";
 import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
-  Button,
   Image,
   TouchableHighlight,
 } from "react-native";
@@ -12,61 +11,94 @@ import {
 export default function Settings(props) {
   return (
     <View style={styles.container}>
-      <TouchableHighlight
-        onPress={() => {
-          props.setMapStyle("standard");
-        }}
-      >
-        <Image
-          style={styles.mapImages}
-          source={require("../assets/map_images/standard.png")}
-        />
-      </TouchableHighlight>
+      <View style={styles.settingsBar}>
+        <TouchableHighlight
+          style={styles.text}
+          onPress={() => {
+            props.setRunStatus("Not Started");
+          }}
+        >
+          <Text style={styles.innerText}>
+            <Icon name="left" size={25} color="white" /> SETTINGS
+          </Text>
+        </TouchableHighlight>
+      </View>
 
-      <TouchableHighlight
-        onPress={() => {
-          props.setMapStyle("retro");
-        }}
-      >
-        <Image
-          style={styles.mapImages}
-          source={require("../assets/map_images/retro.png")}
-        />
-      </TouchableHighlight>
+      <Text style={styles.heading}>Select a map mode:</Text>
 
-      <TouchableHighlight
-        onPress={() => {
-          props.setMapStyle("dark");
-        }}
-      >
-        <Image
-          style={styles.mapImages}
-          source={require("../assets/map_images/dark.png")}
-        />
-      </TouchableHighlight>
+      <View style={styles.imgContainer}>
+        <TouchableHighlight
+          style={styles.highlightImage}
+          onPress={() => {
+            props.setMapStyle("standard");
+          }}
+        >
+          <Image
+            style={styles.mapImage}
+            source={require("../assets/map_images/standard.png")}
+          />
+        </TouchableHighlight>
+      </View>
 
-      <TouchableHighlight
-        onPress={() => {
-          props.setMapStyle("night");
-        }}
-      >
-        <Image
-          style={styles.mapImages}
-          source={require("../assets/map_images/night.png")}
-        />
-      </TouchableHighlight>
+      <View style={styles.imgContainer}>
+        <TouchableHighlight
+          style={styles.highlightImage}
+          onPress={() => {
+            props.setMapStyle("retro");
+          }}
+        >
+          <Image
+            style={styles.mapImage}
+            source={require("../assets/map_images/retro.png")}
+          />
+        </TouchableHighlight>
+      </View>
 
-      <TouchableHighlight
-        onPress={() => {
-          props.setMapStyle("aubergine");
-        }}
-      >
-        <Image
-          style={styles.mapImages}
-          source={require("../assets/map_images/aub.png")}
-        />
-      </TouchableHighlight>
+      <View style={styles.imgContainer}>
+        <TouchableHighlight
+          style={styles.highlightImage}
+          onPress={() => {
+            props.setMapStyle("dark");
+          }}
+        >
+          <Image
+            style={styles.mapImage}
+            source={require("../assets/map_images/dark.png")}
+          />
+        </TouchableHighlight>
+      </View>
 
+      <View style={styles.imgContainer}>
+        <TouchableHighlight
+          style={styles.highlightImage}
+          onPress={() => {
+            props.setMapStyle("night");
+          }}
+        >
+          <Image
+            style={styles.mapImage}
+            source={require("../assets/map_images/night.png")}
+          />
+        </TouchableHighlight>
+      </View>
+
+      <View style={styles.imgContainer}>
+        <TouchableHighlight
+          style={styles.highlightImage}
+          onPress={() => {
+            props.setMapStyle("aubergine");
+          }}
+        >
+          <Image
+            style={styles.mapImage}
+            source={require("../assets/map_images/aub.png")}
+          />
+        </TouchableHighlight>
+      </View>
+
+      <Text style={styles.mapStatus}>Current: {props.mapStyle}</Text>
+      {/* 
+      <Text>Units:</Text>
       <Button
         title="Metric"
         onPress={() => {
@@ -79,30 +111,68 @@ export default function Settings(props) {
           props.setUnits("mi");
         }}
       />
-      <Text>Currently in {props.units}.</Text>
-      <Text>Current map theme is {props.mapStyle}.</Text>
-      <Button
-        title="Return Home"
-        onPress={() => {
-          props.setRunStatus("Not Started");
-        }}
-      />
+      <Text>Currently in {props.units}.</Text> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
     backgroundColor: "black",
-    justifyContent: "center",
+    flex: 1,
     width: 400,
   },
-  mapImages: {
-    width: 350,
-    height: 120,
+  imgContainer: {
+    flex: 240,
+    paddingRight: 20,
+    paddingLeft: 20,
+    paddingBottom: 80,
+  },
+  mapStatus: {
+    color: "white",
+    paddingRight: 20,
+    textAlign: "right",
+  },
+  settingsBar: {
+    flex: 179,
+    width: 195,
+  },
+  mapImage: {
     borderRadius: 10,
-    resizeMode: "contain",
+    height: 120,
+    position: "relative",
+    resizeMode: "cover",
+    top: 10,
+    width: "auto",
+  },
+  highlightImage: {
+    flex: 1,
+  },
+  text: {
+    color: "white",
+    flex: 1,
+    fontFamily: "sans-serif-medium",
+    fontSize: 27,
+    fontWeight: "700",
     marginTop: 12,
+    paddingLeft: 20,
+    textAlign: "left",
+  },
+  innerText: {
+    color: "white",
+    flex: 1,
+    fontFamily: "sans-serif-medium",
+    fontSize: 27,
+    fontWeight: "700",
+    textAlign: "left",
+  },
+  heading: {
+    color: "white",
+    flex: 180,
+    fontSize: 20,
+    fontWeight: "bold",
+    paddingLeft: 20,
+    textAlign: "left",
+    top: 15,
   },
 });
