@@ -4,7 +4,7 @@ A mobile app built in React Native that tracks run data including distance, spee
 
 <div display="flex">
 <img src="https://github.com/Farhan-Nazeer/RunAlong/blob/main/assets/home.png" alt="Home Page" height="25%" width="25%">
-  <img src="https://github.com/Farhan-Nazeer/RunAlong/blob/main/assets/setting.png" alt="Settings Page" height="25%" width="25%">
+  <img src="https://github.com/Farhan-Nazeer/RunAlong/blob/main/assets/settings.png" alt="Settings Page" height="25%" width="25%">
 <img src="https://github.com/Farhan-Nazeer/RunAlong/blob/main/assets/map_interface.png" alt="Map Interface" height="25%" width="25%">
 </div>
 
